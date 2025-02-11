@@ -5,24 +5,14 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.block.Blocks;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.OrePlacedFeatures;
-import net.minecraft.world.gen.feature.PlacedFeature;
-
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,36 +26,7 @@ public class DisableDiamond implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Hello Fabric world!");
 		ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
-		// deepseek
-		BiomeModifications.create(Identifier.of("nodiamondore", "remove_diamond_ore"))
-				.add(ModificationPhase.REMOVALS,
-						// Target all overworld biomes (where diamonds generate)
-						BiomeSelectors.tag(BiomeTags.IS_OVERWORLD),
-						(context, modifications) -> {
-							// Remove both diamond ore variants (stone and deepslate)
-							modifications.getGenerationSettings().removeFeature(
-									GenerationStep.Feature.UNDERGROUND_ORES,
-									OrePlacedFeatures.ORE_DIAMOND);
-							modifications.getGenerationSettings().removeFeature(
-									GenerationStep.Feature.UNDERGROUND_ORES,
-									OrePlacedFeatures.ORE_DIAMOND_LARGE);
-						});
-
-		// gpt
-		BiomeModifications.create(Identifier.of("gptnodiamondore", "gpt_remove_diamond_ore2"))
-				.add(ModificationPhase.REMOVALS,
-						BiomeSelectors.tag(BiomeTags.IS_OVERWORLD),
-						(context, modifications) -> {
-							modifications.getGenerationSettings().removeFeature(
-									GenerationStep.Feature.UNDERGROUND_ORES,
-									OrePlacedFeatures.ORE_DIAMOND);
-							modifications.getGenerationSettings().removeFeature(
-									GenerationStep.Feature.UNDERGROUND_ORES,
-									OrePlacedFeatures.ORE_DIAMOND_LARGE);
-						});
-
 	}
 
 	private static final int SCAN_RADIUS = 3; // Chunks to scan around player
